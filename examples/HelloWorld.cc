@@ -10,19 +10,19 @@
 
 using namespace spsdk;
 
-static cell AMX_NATIVE_CALL HelloWorld(AMX* amx, cell* params) {
+static cell AMX_NATIVE_CALL native_HelloWorld(AMX* amx, cell* params) {
     LOGGER.logLnF(LOG_LEVEL_INFO, "Hello, world!");
     return 1;
 }
 
-class MyPlugin final : public IPlugin {
+class HelloWorld final : public IPlugin {
 public:
     std::string getPluginName() const override {
-        return "MyPlugin";
+        return "HelloWorld";
     }
 
     bool init() override {
-        LOGGER.logLnF(LOG_LEVEL_INFO, "MyPlugin loaded.");
+        LOGGER.logLnF(LOG_LEVEL_INFO, "Plugin 'HelloWorld' loaded.");
         LOGGER.logLnF(LOG_LEVEL_INFO, "  Powered by spsdk.");
 
         return true;
@@ -34,7 +34,7 @@ public:
 
     int onAmxLoaded(AMX* amx) override {
         static std::array<AMX_NATIVE_INFO, 1> NATIVE_LIST = {
-            { "HelloWorld", HelloWorld }
+            { "HelloWorld", native_HelloWorld }
         };
 
         return amx_Register(amx, NATIVE_LIST.data(), NATIVE_LIST.size());
@@ -46,5 +46,5 @@ public:
 };
 
 SPSDK_GET_PLUGIN() {
-    return new MyPlugin();
+    return new HelloWorld();
 }
