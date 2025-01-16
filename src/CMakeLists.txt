@@ -1,7 +1,11 @@
 set(SPSDK_SOURCE_FILES
-    amx/amx.cc
+    amx.cc
+    AmxWrapper.cc
     Logger.cc
     Main.cc
+    Value.cc
+    VariadicArgs.cc
+    Exports.def
 )
 
 set(SPSDK_DEFINTIONS
@@ -15,6 +19,6 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     list(APPEND SPSDK_DEFINTIONS -DLINUX=1)
 endif()
 
-add_library(samp-plugin-sdk SHARED ${SPSDK_SOURCE_FILES})
+add_library(samp-plugin-sdk STATIC ${SPSDK_SOURCE_FILES})
 target_include_directories(samp-plugin-sdk PUBLIC ${PROJECT_SOURCE_DIR}/include)
 target_compile_definitions(samp-plugin-sdk PUBLIC ${SPSDK_DEFINTIONS})

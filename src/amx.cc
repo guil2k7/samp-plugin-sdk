@@ -3,9 +3,9 @@
 // See LICENSE.txt in the root directory of this project
 // or at https://opensource.org/license/mit.
 
-#include <spsdk/amx/amx.h>
+#include <spsdk/amx.h>
 
-void AMXAPI amx_InitLibrary(void* const* const ftable) {
+void amx_InitLibrary(void* const* const ftable) {
     *reinterpret_cast<void** const>(&amx_Align16) = ftable[0];
     *reinterpret_cast<void** const>(&amx_Align32) = ftable[1];
     *reinterpret_cast<void** const>(&amx_Align64) = ftable[2];

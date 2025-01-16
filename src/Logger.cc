@@ -7,8 +7,8 @@
 #include <cstdarg>
 #include <cstdio>
 #include <filesystem>
-#include <spsdk/Logger.hh>
 #include <stdexcept>
+#include <spsdk/Logger.hh>
 
 using namespace spsdk;
 

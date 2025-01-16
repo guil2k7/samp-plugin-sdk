@@ -3,12 +3,13 @@
 // See LICENSE.txt in the root directory of this project
 // or at https://opensource.org/license/mit.
 
-#include <spsdk/Plugin.hh>
+#include <spsdk/AmxWrapper.hh>
 #include <spsdk/Logger.hh>
+#include <spsdk/Plugin.hh>
 
 using namespace spsdk;
 
-static IPlugin* PLUGIN = {};
+static IPlugin* PLUGIN_INSTANCE = {};
 
 #if defined(LINUX)
     #define PLUGIN_CALL
@@ -21,11 +22,11 @@ static IPlugin* PLUGIN = {};
 SPSDK_GET_PLUGIN();
 
 PLUGIN_EXPORT unsigned int PLUGIN_CALL Supports() {
-    PLUGIN = _spsdk_getPlugin();
+    PLUGIN_INSTANCE = _spsdk_getPlugin();
 
     unsigned int supports = 0x0200 | 0x10000;
 
-    if (PLUGIN->getFlags() & PLUGIN_FLAG_PROCESS_TICK)
+    if (PLUGIN_INSTANCE->getFlags() & PLUGIN_FLAG_PROCESS_TICK)
         supports |= 0x20000;
 
     return supports;
@@ -33,27 +34,28 @@ PLUGIN_EXPORT unsigned int PLUGIN_CALL Supports() {
 
 PLUGIN_EXPORT bool PLUGIN_CALL Load(void** data) {
     LOGGER = Logger(
-        PLUGIN->getPluginName(),
+        PLUGIN_INSTANCE->getPluginName(),
         reinterpret_cast<void (*)(char const*, ...)>(data[0])
     );
 
-    amx_InitLibrary(reinterpret_cast<void**>(data[0x10]));
+    AmxWrapper::initialize(reinterpret_cast<void**>(data[0x10]));
 
-    return PLUGIN->init();
+    return PLUGIN_INSTANCE->init();
 }
 
 PLUGIN_EXPORT void PLUGIN_CALL Unload() {
-    PLUGIN->free();
+    PLUGIN_INSTANCE->free();
+    AmxWrapper::shutdown();
 }
 
 PLUGIN_EXPORT int PLUGIN_CALL AmxLoad(AMX* amx) {
-    return PLUGIN->onAmxLoaded(amx);
+    return PLUGIN_INSTANCE->onAmxLoaded(AmxWrapper::getFromHandle(amx));
 }
 
 PLUGIN_EXPORT int PLUGIN_CALL AmxUnload(AMX* amx) {
-    return PLUGIN->onAmxUnload(amx);
+    return PLUGIN_INSTANCE->onAmxUnload(AmxWrapper::getFromHandle(amx));
 }
 
 PLUGIN_EXPORT void PLUGIN_CALL ProcessTick() {
-    PLUGIN->processTick();
+    PLUGIN_INSTANCE->processTick();
 }

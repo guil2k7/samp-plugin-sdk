@@ -27,29 +27,19 @@
 #if defined FREEBSD && !defined __FreeBSD__
   #define __FreeBSD__
 #endif
-#if defined LINUX || defined __FreeBSD__ || defined __OpenBSD__
-  #include "sclinux.h"
-#endif
 
+#include <stddef.h>
 #include <stdint.h>
-
-#if defined _LP64 || defined WIN64 || defined _WIN64
-  #if !defined __64BIT__
-    #define __64BIT__
-  #endif
-#endif
 
 #if HAVE_ALLOCA_H
   #include <alloca.h>
+#elif HAVE_MALLOC_H //alloca could be also defined here
+  #include <malloc.h>
 #endif
 #if defined __WIN32__ || defined _WIN32 || defined WIN32 /* || defined __MSDOS__ */
   #if !defined alloca
-    #define alloca(n)   _alloca(n)
+	#define alloca(n)   _alloca(n)
   #endif
-#endif
-
-#if !defined arraysize
-  #define arraysize(array)  (sizeof(array) / sizeof((array)[0]))
 #endif
 
 #ifdef  __cplusplus
@@ -58,10 +48,10 @@ extern  "C" {
 
 #if defined PAWN_DLL
   #if !defined AMX_NATIVE_CALL
-    #define AMX_NATIVE_CALL __stdcall
+	#define AMX_NATIVE_CALL __stdcall
   #endif
   #if !defined AMXAPI
-    #define AMXAPI          __stdcall
+	#define AMXAPI          __stdcall
   #endif
 #endif
 
@@ -72,13 +62,13 @@ extern  "C" {
 /* calling convention for all interface functions and callback functions */
 #if !defined AMXAPI
   #if defined STDECL
-    #define AMXAPI      __stdcall
+	#define AMXAPI      __stdcall
   #elif defined CDECL
-    #define AMXAPI      __cdecl
+	#define AMXAPI      __cdecl
   #elif defined GCC_HASCLASSVISIBILITY
-    #define AMXAPI __attribute__ ((visibility("default")))
+	#define AMXAPI __attribute__ ((visibility("default")))
   #else
-    #define AMXAPI
+	#define AMXAPI
   #endif
 #endif
 #if !defined AMXEXPORT
@@ -121,16 +111,16 @@ extern  "C" {
 
 struct tagAMX;
 typedef cell (AMX_NATIVE_CALL *AMX_NATIVE)(struct tagAMX *amx, cell *params);
-typedef int (AMXAPI* AMX_CALLBACK)(struct tagAMX *amx, cell index,
-                                   cell *result, cell *params);
-typedef int (AMXAPI* AMX_DEBUG)(struct tagAMX *amx);
+typedef int (AMXAPI *AMX_CALLBACK)(struct tagAMX *amx, cell index,
+								   cell *result, cell *params);
+typedef int (AMXAPI *AMX_DEBUG)(struct tagAMX *amx);
 #if !defined _FAR
   #define _FAR
 #endif
 
 #if defined _MSC_VER
   #pragma warning(disable:4103)  /* disable warning message 4103 that complains
-                                  * about pragma pack in a header file */
+								  * about pragma pack in a header file */
   #pragma warning(disable:4100)  /* "'%$S' : unreferenced formal parameter" */
 #endif
 
@@ -149,15 +139,15 @@ typedef int (AMXAPI* AMX_DEBUG)(struct tagAMX *amx);
 
 #if !defined AMX_NO_ALIGN
   #if defined LINUX || defined __FreeBSD__
-    #pragma pack(1)         /* structures must be packed (byte-aligned) */
+	#pragma pack(1)         /* structures must be packed (byte-aligned) */
   #elif defined MACOS && defined __MWERKS__
 	#pragma options align=mac68k
   #else
-    #pragma pack(push)
-    #pragma pack(1)         /* structures must be packed (byte-aligned) */
-    #if defined __TURBOC__
-      #pragma option -a-    /* "pack" pragma for older Borland compilers */
-    #endif
+	#pragma pack(push)
+	#pragma pack(1)         /* structures must be packed (byte-aligned) */
+	#if defined __TURBOC__
+	  #pragma option -a-    /* "pack" pragma for older Borland compilers */
+	#endif
   #endif
 #endif
 
@@ -179,6 +169,11 @@ typedef struct tagFUNCSTUBNT {
   ucell address         PACKED;
   uint32_t nameofs      PACKED;
 } PACKED AMX_FUNCSTUBNT;
+
+/* used when we don't yet know if this is AMX_FUNCSTUB or AMX_FUNCSTUBNT */
+typedef struct tagFUNCPART {
+  ucell address         PACKED;
+} AMX_FUNCPART;
 
 /* The AMX structure is the internal structure for many functions. Not all
  * fields are valid at all times; many fields are cached in local variables.
@@ -210,9 +205,9 @@ typedef struct tagAMX {
   cell reset_hea        PACKED;
   cell sysreq_d         PACKED; /* relocated address/value for the SYSREQ.D opcode */
   #if defined JIT
-    /* support variables for the JIT */
-    int reloc_size      PACKED; /* required temporary buffer for relocations */
-    long code_size      PACKED; /* estimated memory footprint of the native code */
+	/* support variables for the JIT */
+	int reloc_size      PACKED; /* required temporary buffer for relocations */
+	long code_size      PACKED; /* estimated memory footprint of the native code */
   #endif
 } PACKED AMX;
 
@@ -246,6 +241,17 @@ typedef struct tagAMX_HEADER {
 #elif PAWN_CELL_SIZE==64
   #define AMX_MAGIC     0xf1e1
 #endif
+
+#define USENAMETABLE(hdr) \
+                        ((hdr)->defsize==sizeof(AMX_FUNCSTUBNT))
+#define NUMENTRIES(hdr,field,nextfield) \
+                        (unsigned)(((hdr)->nextfield - (hdr)->field) / (hdr)->defsize)
+#define GETENTRY(hdr,table,index) \
+                        (AMX_FUNCPART *)((unsigned char*)(hdr) + (unsigned)(hdr)->table + (unsigned)index*(hdr)->defsize)
+#define GETENTRYNAME(hdr,entry) \
+                        ( USENAMETABLE(hdr) \
+                           ? (char *)((unsigned char*)(hdr) + (unsigned)((AMX_FUNCSTUBNT*)(entry))->nameofs) \
+                           : ((AMX_FUNCSTUB*)(entry))->name )
 
 enum {
   AMX_ERR_NONE,
@@ -312,17 +318,15 @@ enum {
 #endif
 
 #define amx_StrParam(amx,param,result)                                      \
-    do {                                                                    \
-      cell *amx_cstr_; int amx_length_;                                     \
-      amx_GetAddr((amx), (param), &amx_cstr_);                              \
-      amx_StrLen(amx_cstr_, &amx_length_);                                  \
-      if (amx_length_ > 0 &&                                                \
-          ((result) = (char*)alloca((amx_length_ + 1) * sizeof(*(result)))) != NULL) \
-        amx_GetString((char*)(result), amx_cstr_, sizeof(*(result))>1, amx_length_ + 1); \
-      else (result) = NULL;                                                 \
-    } while (0)
-
-void AMXAPI amx_InitLibrary(void* const* const ftable);
+	do {                                                                    \
+	  cell *amx_cstr_; int amx_length_;                                     \
+	  amx_GetAddr((amx), (param), &amx_cstr_);                              \
+	  amx_StrLen(amx_cstr_, &amx_length_);                                  \
+	  if (amx_length_ > 0 &&                                                \
+		  ((result) = (char*)alloca((amx_length_ + 1) * sizeof(*(result)))) != NULL) \
+		amx_GetString((char*)(result), amx_cstr_, sizeof(*(result))>1, amx_length_ + 1); \
+	  else (result) = NULL;                                                 \
+	} while (0)
 
 extern uint16_t * (AMXAPI* amx_Align16)(uint16_t *v);
 extern uint32_t * (AMXAPI* amx_Align32)(uint32_t *v);
@@ -384,11 +388,11 @@ extern int (AMXAPI* amx_UTF8Put)(char *string, char **endptr, int maxchars, cell
 
 #if !defined AMX_NO_ALIGN
   #if defined LINUX || defined __FreeBSD__
-    #pragma pack()    /* reset default packing */
+	#pragma pack()    /* reset default packing */
   #elif defined MACOS && defined __MWERKS__
-    #pragma options align=reset
+	#pragma options align=reset
   #else
-    #pragma pack(pop) /* reset previous packing */
+	#pragma pack(pop) /* reset previous packing */
   #endif
 #endif
 

@@ -5,8 +5,8 @@
 
 #pragma once
 
-#include "amx/amx.h"
 #include <string>
+#include "AmxWrapper.hh"
 
 namespace spsdk {
 
@@ -27,8 +27,8 @@ public:
     virtual bool init() = 0;
     virtual void free() = 0;
 
-    virtual int onAmxLoaded(AMX* amx) = 0;
-    virtual int onAmxUnload(AMX* amx) = 0;
+    virtual int onAmxLoaded(AmxWrapper& amx) = 0;
+    virtual int onAmxUnload(AmxWrapper& amx) = 0;
 
     virtual void processTick() {}
 };

@@ -3,26 +3,29 @@
 // See LICENSE.txt in the root directory of this project
 // or at https://opensource.org/license/mit.
 
-#include <array>
 #include <spsdk/Plugin.hh>
 #include <spsdk/Logger.hh>
+#include <sys/utsname.h>
 
 using namespace spsdk;
 
-static cell AMX_NATIVE_CALL native_HelloWorld(AMX* amx, cell* params) {
-    LOGGER.logLnF(LOG_LEVEL_INFO, "Hello, world!");
-    return 1;
-}
-
-class HelloWorld final : public IPlugin {
+class UnamePlugin final : public IPlugin {
 public:
     std::string getPluginName() const override {
-        return "HelloWorld";
+        return "Uname";
     }
 
     bool init() override {
-        LOGGER.logLnF(LOG_LEVEL_INFO, "Plugin 'HelloWorld' loaded.");
+        LOGGER.logLnF(LOG_LEVEL_INFO, "Plugin 'UnamePlugin' loaded.");
         LOGGER.logLnF(LOG_LEVEL_INFO, "  Powered by spsdk.");
+
+        utsname unameData;
+        uname(&unameData);
+
+        LOGGER.logLnF(LOG_LEVEL_INFO, "nodename: %s", unameData.nodename);
+        LOGGER.logLnF(LOG_LEVEL_INFO, "release: %s", unameData.release);
+        LOGGER.logLnF(LOG_LEVEL_INFO, "version: %s", unameData.version);
+        LOGGER.logLnF(LOG_LEVEL_INFO, "machine: %s", unameData.machine);
 
         return true;
     }
@@ -32,11 +35,7 @@ public:
     }
 
     int onAmxLoaded(AmxWrapper& amx) override {
-        static std::array<AMX_NATIVE_INFO, 1> NATIVE_LIST = {
-            { "HelloWorld", native_HelloWorld }
-        };
-
-        return amx.registerNatives(NATIVE_LIST.data(), NATIVE_LIST.size());
+        return AMX_ERR_NONE;
     }
 
     virtual int onAmxUnload(AmxWrapper& amx) override {
@@ -45,5 +44,5 @@ public:
 };
 
 SPSDK_GET_PLUGIN() {
-    return new HelloWorld();
+    return new UnamePlugin();
 }
