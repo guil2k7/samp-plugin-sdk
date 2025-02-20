@@ -3944,6 +3944,22 @@ SAMPGDK_MODULE_CLEANUP(a_vehicles) {
 /* #include "internal/native.h" */
 /* #include "internal/param.h" */
 
+SAMPGDK_NATIVE(bool, SendClientCheck(int playerid, int type, int addr, int offset, int byteCount)) {
+  static AMX_NATIVE native;
+  cell retval;
+  cell params[6];
+  sampgdk_log_debug("SendClientCheck(%d, %d, %d, %d, %d)", playerid, type, addr, offset, byteCount);
+  native = sampgdk_native_find_flexible("SendClientCheck", native);
+  params[0] = 5 * sizeof(cell);
+  params[1] = (cell)playerid;
+  params[2] = (cell)type;
+  params[3] = (cell)addr;
+  params[4] = (cell)offset;
+  params[5] = (cell)byteCount;
+  retval = native(sampgdk_fakeamx_amx(), params);
+  return !!(retval);
+}
+
 SAMPGDK_NATIVE(bool, SendClientMessage(int playerid, int color, const char * message)) {
   static AMX_NATIVE native;
   cell retval;
@@ -6036,6 +6052,29 @@ static bool _OnGameModeExit(AMX *amx, void *callback, cell *retval) {
   return true;
 }
 
+typedef bool (SAMPGDK_CALLBACK_CALL *OnClientCheckResponse_callback)(int playerid, int actionid, int memaddr, int retndata);
+static bool _OnClientCheckResponse(AMX *amx, void *callback, cell *retval) {
+  bool retval_;
+  int playerid;
+  int actionid;
+  int memaddr;
+  int retndata;
+  
+  sampgdk_param_get_cell(amx, 0, (cell *)&playerid);
+  sampgdk_param_get_cell(amx, 1, (cell *)&actionid);
+  sampgdk_param_get_cell(amx, 2, (cell *)&memaddr);
+  sampgdk_param_get_cell(amx, 3, (cell *)&retndata);
+
+  sampgdk_log_debug("OnClientCheckResponse(%d, %d, %d, %d)", playerid, actionid, memaddr, retndata);
+
+  retval_ = ((OnClientCheckResponse_callback)callback)(playerid, actionid, memaddr, retndata);
+  if (retval != NULL) {
+    *retval = (cell)retval_;
+  }
+
+  return !!retval_ != false;
+}
+
 typedef bool (SAMPGDK_CALLBACK_CALL *OnPlayerConnect_callback)(int playerid);
 static bool _OnPlayerConnect(AMX *amx, void *callback, cell *retval) {
   bool retval_;
@@ -7001,6 +7040,9 @@ SAMPGDK_MODULE_INIT(a_samp) {
     return error;
   }
   if ((error = sampgdk_callback_register("OnPlayerDeath", _OnPlayerDeath)) < 0) {
+    return error;
+  }
+  if ((error = sampgdk_callback_register("OnClientCheckResponse", _OnClientCheckResponse)) < 0) {
     return error;
   }
   if ((error = sampgdk_callback_register("OnPlayerConnect", _OnPlayerConnect)) < 0) {

@@ -2012,6 +2012,12 @@ inline bool GetVehicleModelInfo(int model, int infotype, float * X, float * Y, f
 
 /**
  * \ingroup natives
+ * \see <a href="http://wiki.sa-mp.com/wiki/SendClientCheck">SendClientCheck on SA-MP Wiki</a>
+ */
+ SAMPGDK_NATIVE(bool, SendClientCheck(int playerid, int type, int addr, int offset, int byteCount));
+
+/**
+ * \ingroup natives
  * \see <a href="http://wiki.sa-mp.com/wiki/SendClientMessage">SendClientMessage on SA-MP Wiki</a>
  */
 SAMPGDK_NATIVE(bool, SendClientMessage(int playerid, int color, const char * message));
@@ -3919,6 +3925,12 @@ SAMPGDK_CALLBACK(bool, OnGameModeInit());
  * \see <a href="http://wiki.sa-mp.com/wiki/OnGameModeExit">OnGameModeExit on SA-MP Wiki</a>
  */
 SAMPGDK_CALLBACK(bool, OnGameModeExit());
+
+/**
+ * \ingroup callbacks
+ * \see <a href="http://wiki.sa-mp.com/wiki/OnClientCheckResponse">OnClientCheckResponse on SA-MP Wiki</a>
+ */
+ SAMPGDK_CALLBACK(bool, OnClientCheckResponse(int playerid, int actionid, int memaddr, int retndata));
 
 /**
  * \ingroup callbacks
