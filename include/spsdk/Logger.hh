@@ -32,6 +32,6 @@ private:
     void (*m_fn)(char const*, ...);
 };
 
-extern Logger LOGGER;
+extern Logger logger;
 
 } // namespace spsdk

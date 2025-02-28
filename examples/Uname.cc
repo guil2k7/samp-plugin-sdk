@@ -16,16 +16,16 @@ public:
     }
 
     bool init() override {
-        LOGGER.logLnF(LOG_LEVEL_INFO, "Plugin 'UnamePlugin' loaded.");
-        LOGGER.logLnF(LOG_LEVEL_INFO, "  Powered by spsdk.");
+        logger.logLnF(LOG_LEVEL_INFO, "Plugin 'UnamePlugin' loaded.");
+        logger.logLnF(LOG_LEVEL_INFO, "  Powered by spsdk.");
 
         utsname unameData;
         uname(&unameData);
 
-        LOGGER.logLnF(LOG_LEVEL_INFO, "nodename: %s", unameData.nodename);
-        LOGGER.logLnF(LOG_LEVEL_INFO, "release: %s", unameData.release);
-        LOGGER.logLnF(LOG_LEVEL_INFO, "version: %s", unameData.version);
-        LOGGER.logLnF(LOG_LEVEL_INFO, "machine: %s", unameData.machine);
+        logger.logLnF(LOG_LEVEL_INFO, "nodename: %s", unameData.nodename);
+        logger.logLnF(LOG_LEVEL_INFO, "release: %s", unameData.release);
+        logger.logLnF(LOG_LEVEL_INFO, "version: %s", unameData.version);
+        logger.logLnF(LOG_LEVEL_INFO, "machine: %s", unameData.machine);
 
         return true;
     }

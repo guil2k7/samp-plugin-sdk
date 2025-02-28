@@ -9,7 +9,7 @@
 using namespace spsdk;
 
 static cell AMX_NATIVE_CALL native_HelloWorld(AMX* amx, cell* params) {
-    LOGGER.logLnF(LOG_LEVEL_INFO, "Hello, world!");
+    logger.logLnF(LOG_LEVEL_INFO, "Hello, world!");
     return 1;
 }
 
@@ -20,8 +20,8 @@ public:
     }
 
     bool init() override {
-        LOGGER.logLnF(LOG_LEVEL_INFO, "Plugin 'HelloWorld' loaded.");
-        LOGGER.logLnF(LOG_LEVEL_INFO, "  Powered by spsdk.");
+        logger.logLnF(LOG_LEVEL_INFO, "Plugin 'HelloWorld' loaded.");
+        logger.logLnF(LOG_LEVEL_INFO, "  Powered by spsdk.");
 
         return true;
     }

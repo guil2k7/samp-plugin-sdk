@@ -12,7 +12,7 @@ int AmxAllocManager::alloc(cell* amxAddr, cell** physAddr, cell cellCount) {
     int error = amx_Allot(amx, cellCount, amxAddr, physAddr);
 
     if (error != AMX_ERR_NONE) {
-        LOGGER.logLnF(LOG_LEVEL_CRITICAL, "could not allocate %d cells", cellCount);
+        logger.logLnF(LOG_LEVEL_CRITICAL, "could not allocate %d cells", cellCount);
         return error;
     }
 

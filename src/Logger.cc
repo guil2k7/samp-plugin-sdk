@@ -11,7 +11,7 @@
 
 using namespace spsdk;
 
-Logger spsdk::LOGGER;
+Logger spsdk::logger;
 
 Logger::Logger(std::string const& pluginName, void (*fn)(char const*, ...))
     : m_pluginName(pluginName)
