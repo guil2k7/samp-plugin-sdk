@@ -3,57 +3,59 @@
 // See LICENSE.txt in the root directory of this project
 // or at https://opensource.org/license/mit.
 
-#include <spsdk/AmxWrapper.hh>
+#include <spsdk/AmxUtils.hh>
 #include <spsdk/Logger.hh>
 #include <spsdk/Plugin.hh>
 #include <spsdk/sampgdk.h>
 
 using namespace spsdk;
 
-static IPlugin* PLUGIN_INSTANCE = {};
+static IPlugin* g_pluginInstance = {};
 
 SPSDK_GET_PLUGIN();
 
+// From `amx.cc`.
+void amx_InitLibrary(void* const* const ftable);
+
 PLUGIN_EXPORT unsigned int PLUGIN_CALL Supports() {
-    PLUGIN_INSTANCE = _spsdk_getPlugin();
+    g_pluginInstance = _spsdk_getPlugin();
 
-    unsigned int supports = sampgdk::Supports() | 0x0200 | 0x10000;
+    unsigned int supports = sampgdk_Supports() | 0x0200 | 0x10000;
 
-    if (PLUGIN_INSTANCE->getFlags() & PLUGIN_FLAG_PROCESS_TICK)
+    if (g_pluginInstance->getFlags() & kPluginFlag_ProcessTick)
         supports |= 0x20000;
 
     return supports;
 }
 
 PLUGIN_EXPORT bool PLUGIN_CALL Load(void** data) {
-    if (!sampgdk::Load(data))
+    if (!sampgdk_Load(data))
         return false;
 
     LOGGER = Logger(
-        PLUGIN_INSTANCE->getPluginName(),
+        g_pluginInstance->getPluginName(),
         reinterpret_cast<void (*)(char const*, ...)>(data[0])
     );
 
-    AmxWrapper::initialize(reinterpret_cast<void**>(data[0x10]));
+    amx_InitLibrary(reinterpret_cast<void**>(data[0x10]));
 
-    return PLUGIN_INSTANCE->init();
+    return g_pluginInstance->init();
 }
 
 PLUGIN_EXPORT void PLUGIN_CALL Unload() {
-    PLUGIN_INSTANCE->free();
-    AmxWrapper::shutdown();
+    g_pluginInstance->free();
 
-    sampgdk::Unload();
+    sampgdk_Unload();
 }
 
 PLUGIN_EXPORT int PLUGIN_CALL AmxLoad(AMX* amx) {
-    return PLUGIN_INSTANCE->onAmxLoaded(AmxWrapper::getFromHandle(amx));
+    return g_pluginInstance->onAmxLoaded(amx);
 }
 
 PLUGIN_EXPORT int PLUGIN_CALL AmxUnload(AMX* amx) {
-    return PLUGIN_INSTANCE->onAmxUnload(AmxWrapper::getFromHandle(amx));
+    return g_pluginInstance->onAmxUnload(amx);
 }
 
 PLUGIN_EXPORT void PLUGIN_CALL ProcessTick() {
-    PLUGIN_INSTANCE->processTick();
+    g_pluginInstance->processTick();
 }

@@ -31,14 +31,14 @@ public:
     }
 
     void free() override {
-
+        delete this;
     }
 
-    int onAmxLoaded(AmxWrapper& amx) override {
+    int onAmxLoaded(AMX* amx) override {
         return AMX_ERR_NONE;
     }
 
-    virtual int onAmxUnload(AmxWrapper& amx) override {
+    virtual int onAmxUnload(AMX* amx) override {
         return AMX_ERR_NONE;
     }
 };

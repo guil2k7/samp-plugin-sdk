@@ -6,20 +6,20 @@
 #pragma once
 
 #include <string>
-#include "AmxWrapper.hh"
+#include "amx.h"
 
 namespace spsdk {
 
 enum PluginFlag {
-    PLUGIN_FLAG_PROCESS_TICK = 1 << 1,
+    kPluginFlag_ProcessTick = 1 << 1,
 };
 
-static constexpr int PLUGIN_DEFAULT_FLAGS = 0;
+constexpr int kPluginFlag_Default = 0;
 
 class IPlugin {
 public:
     virtual int getFlags() const {
-        return PLUGIN_DEFAULT_FLAGS;
+        return kPluginFlag_Default;
     }
 
     virtual std::string getPluginName() const = 0;
@@ -27,8 +27,8 @@ public:
     virtual bool init() = 0;
     virtual void free() = 0;
 
-    virtual int onAmxLoaded(AmxWrapper& amx) = 0;
-    virtual int onAmxUnload(AmxWrapper& amx) = 0;
+    virtual int onAmxLoaded(AMX* amx) = 0;
+    virtual int onAmxUnload(AMX* amx) = 0;
 
     virtual void processTick() {}
 };

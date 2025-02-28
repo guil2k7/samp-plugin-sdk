@@ -3,7 +3,6 @@
 // See LICENSE.txt in the root directory of this project
 // or at https://opensource.org/license/mit.
 
-#include <array>
 #include <spsdk/Plugin.hh>
 #include <spsdk/Logger.hh>
 
@@ -28,18 +27,19 @@ public:
     }
 
     void free() override {
-
+        delete this;
     }
 
-    int onAmxLoaded(AmxWrapper& amx) override {
-        static std::array<AMX_NATIVE_INFO, 1> NATIVE_LIST = {
-            { "HelloWorld", native_HelloWorld }
+    int onAmxLoaded(AMX* amx) override {
+        static AMX_NATIVE_INFO kNativeList[] = {
+            { "HelloWorld", native_HelloWorld },
+            { nullptr, nullptr }
         };
 
-        return amx.registerNatives(NATIVE_LIST.data(), NATIVE_LIST.size());
+        return amx_Register(amx, kNativeList, -1);
     }
 
-    virtual int onAmxUnload(AmxWrapper& amx) override {
+    virtual int onAmxUnload(AMX* amx) override {
         return AMX_ERR_NONE;
     }
 };

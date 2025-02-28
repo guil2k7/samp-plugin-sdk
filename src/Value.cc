@@ -3,50 +3,45 @@
 // See LICENSE.txt in the root directory of this project
 // or at https://opensource.org/license/mit.
 
-#include <spsdk/AmxWrapper.hh>
 #include <spsdk/Value.hh>
 
 using namespace spsdk;
 
 PawnValue::~PawnValue() {
     switch (type) {
-    case PawnValueType::Undefined:
-        break;
+        case PawnValueType::kUndefined:
+            break;
 
-    case PawnValueType::Int:
-    case PawnValueType::Float:
-    case PawnValueType::UInt:
-        break;
+        case PawnValueType::kInt:
+        case PawnValueType::kFloat:
+        case PawnValueType::kUInt:
+            break;
 
-    case PawnValueType::String:
-        delete[] data.string.data;
-        break;
+        case PawnValueType::kString:
+            delete[] data.string.data;
+            break;
 
-    case PawnValueType::Array:
-        delete[] data.array.data;
-        break;
+        case PawnValueType::kArray:
+            delete[] data.array.data;
+            break;
     }
 }
 
-int PawnValue::push(AmxWrapper& amx) const {
+int PawnValue::push(AmxAllocManager& allocManager) const {
     switch (type) {
-    case PawnValueType::Int:
-        return amx.push(data.i);
+        case PawnValueType::kInt:
+        case PawnValueType::kFloat:
+        case PawnValueType::kUInt:
+            return allocManager.push(data.i);
 
-    case PawnValueType::Float:
-        return amx.push(data.f);
+        case PawnValueType::kString:
+            return allocManager.push(data.string.data);
 
-    case PawnValueType::UInt:
-        return amx.push(data.u);
+        case PawnValueType::kArray:
+            return allocManager.push(data.array.data, data.array.length);
 
-    case PawnValueType::String:
-        return amx.push(data.string.data);
-
-    case PawnValueType::Array:
-        return amx.push(data.array.data, data.array.length);
-
-    case PawnValueType::Undefined:
-        return AMX_ERR_NONE;
+        case PawnValueType::kUndefined:
+            return AMX_ERR_NONE;
     }
 }
 
@@ -54,25 +49,25 @@ PawnValue& PawnValue::operator =(PawnValue&& that) {
     type = that.type;
 
     switch (type) {
-    case PawnValueType::Int:
-    case PawnValueType::Float:
-    case PawnValueType::UInt:
-        data.i = that.data.i;
-        break;
+        case PawnValueType::kInt:
+        case PawnValueType::kFloat:
+        case PawnValueType::kUInt:
+            data.i = that.data.i;
+            break;
 
-    case PawnValueType::String:
-        data.string = that.data.string;
-        break;
+        case PawnValueType::kString:
+            data.string = that.data.string;
+            break;
 
-    case PawnValueType::Array:
-        data.array = that.data.array;
-        break;
+        case PawnValueType::kArray:
+            data.array = that.data.array;
+            break;
 
-    case PawnValueType::Undefined:
-        break;
+        case PawnValueType::kUndefined:
+            break;
     }
 
-    that.type = PawnValueType::Undefined;
+    that.type = PawnValueType::kUndefined;
 
     return *this;
 }

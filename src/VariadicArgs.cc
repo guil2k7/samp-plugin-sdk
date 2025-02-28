@@ -5,7 +5,7 @@
 
 #include <cstring>
 #include <string>
-#include <spsdk/AmxWrapper.hh>
+#include <spsdk/AmxUtils.hh>
 #include <spsdk/VariadicArgs.hh>
 
 using namespace spsdk;
@@ -62,8 +62,8 @@ bool Lexer::next() {
     return true;
 }
 
-VariadicArgsParseError spsdk::parseVariadicArgs(AmxWrapper& amx, cell const* args, size_t formatIndex, size_t vargsIndex, std::vector<PawnValue>& output) {
-    std::string format = amx.loadString(args[formatIndex]);
+VariadicArgsParseError spsdk::parseVariadicArgs(AMX* amx, cell const* args, size_t formatIndex, size_t vargsIndex, std::vector<PawnValue>& output) {
+    std::string format = amxLoadString(amx, args[formatIndex]);
     size_t argsCount = args[0] / sizeof (cell);
 
     Lexer lexer(format.c_str(), format.length());
@@ -74,77 +74,77 @@ VariadicArgsParseError spsdk::parseVariadicArgs(AmxWrapper& amx, cell const* arg
 
     while (lexer.next()) {
         if (argIndex > argsCount)
-            return VariadicArgsParseError::ArgsCountMismatch;
+            return VariadicArgsParseError::kArgsCountMismatch;
 
         cell* source;
-        amx_GetAddr(amx.handle(), args[argIndex++], &source);
+        amx_GetAddr(amx, args[argIndex++], &source);
 
         switch (lexer.kind) {
-        case 'i':
-            pwnValue.type = PawnValueType::Int;
-            pwnValue.data.i = *source;
-            output.push_back(std::move(pwnValue));
-            break;
+            case 'i':
+                pwnValue.type = PawnValueType::kInt;
+                pwnValue.data.i = *source;
+                output.push_back(std::move(pwnValue));
+                break;
 
-        case 'f':
-            pwnValue.type = PawnValueType::Float;
-            pwnValue.data.i = *source;
-            output.push_back(std::move(pwnValue));
-            break;
+            case 'f':
+                pwnValue.type = PawnValueType::kFloat;
+                pwnValue.data.i = *source;
+                output.push_back(std::move(pwnValue));
+                break;
 
-        case 'u':
-            pwnValue.type = PawnValueType::UInt;
-            pwnValue.data.i = *source;
-            output.push_back(std::move(pwnValue));
-            break;
+            case 'u':
+                pwnValue.type = PawnValueType::kUInt;
+                pwnValue.data.i = *source;
+                output.push_back(std::move(pwnValue));
+                break;
 
-        case 's': {
-            cell length;
-            amx_StrLen(source, &length);
+            case 's': {
+                cell length;
+                amx_StrLen(source, &length);
 
-            pwnValue.type = PawnValueType::String;
-            pwnValue.data.string.data = new char[length + 1];
-            pwnValue.data.string.length = length;
+                pwnValue.type = PawnValueType::kString;
+                pwnValue.data.string.data = new char[length + 1];
+                pwnValue.data.string.length = length;
 
-            amx_GetString(pwnValue.data.string.data, source, 0, length + 1);
+                amx_GetString(pwnValue.data.string.data, source, 0, length + 1);
 
-            output.push_back(std::move(pwnValue));
-            break;
-        }
-
-        case 'a': {
-            cell length;
-
-            if (lexer.attribute.empty()) {
-                return VariadicArgsParseError::InvalidSpecifierUse;
-            }
-            else if (lexer.attribute == "*") {
-                if (argIndex >= argsCount)
-                    return VariadicArgsParseError::ArgsCountMismatch;
-
-                length = argIndex++;
-            }
-            else {
-                length = std::stoi(lexer.attribute);
-
-                if (length <= 0)
-                    return VariadicArgsParseError::InvalidSpecifierUse;
+                output.push_back(std::move(pwnValue));
+                break;
             }
 
-            pwnValue.type = PawnValueType::Array;
-            pwnValue.data.array.data = new cell[length];
-            pwnValue.data.array.length = length;
+            case 'a': {
+                cell length;
 
-            memcpy(pwnValue.data.array.data, source, length * sizeof (cell));
+                if (lexer.attribute.empty()) {
+                    return VariadicArgsParseError::kInvalidSpecifierUse;
+                }
+                else if (lexer.attribute == "*") {
+                    if (argIndex >= argsCount)
+                        return VariadicArgsParseError::kArgsCountMismatch;
 
-            output.push_back(std::move(pwnValue));
-            break;
-        }
+                    length = argIndex++;
+                }
+                else {
+                    length = std::stoi(lexer.attribute);
 
-        default:
-            return VariadicArgsParseError::UnknownSpecifier;
+                    if (length <= 0)
+                        return VariadicArgsParseError::kInvalidSpecifierUse;
+                }
+
+                pwnValue.type = PawnValueType::kArray;
+                pwnValue.data.array.data = new cell[length];
+                pwnValue.data.array.length = length;
+
+                memcpy(pwnValue.data.array.data, source, length * sizeof (cell));
+
+                output.push_back(std::move(pwnValue));
+                break;
+            }
+
+            default:
+                return VariadicArgsParseError::kUnknownSpecifier;
         }
     }
 
-    return VariadicArgsParseError::None;
+    return VariadicArgsParseError::kNone;
 }

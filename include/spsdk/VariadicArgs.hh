@@ -11,12 +11,12 @@
 namespace spsdk {
 
 enum class VariadicArgsParseError {
-    None,
-    ArgsCountMismatch,
-    InvalidSpecifierUse,
-    UnknownSpecifier,
+    kNone,
+    kArgsCountMismatch,
+    kInvalidSpecifierUse,
+    kUnknownSpecifier,
 };
 
-VariadicArgsParseError parseVariadicArgs(AmxWrapper& amx, cell const* args, size_t formatIndex, size_t vargsIndex, std::vector<PawnValue>& output);
+VariadicArgsParseError parseVariadicArgs(AMX* amx, cell const* args, size_t formatIndex, size_t vargsIndex, std::vector<PawnValue>& output);
 
 } // namespace spsdk

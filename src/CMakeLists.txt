@@ -1,6 +1,6 @@
 set(SPSDK_SOURCE_FILES
     amx.cc
-    AmxWrapper.cc
+    AmxUtils.cc
     Logger.cc
     Main.cc
     sampgdk.c
@@ -15,7 +15,6 @@ set(SPSDK_DEFINTIONS
     -DSPSDK_VERSION_PATCH=${SPSDK_VERSION_PATCH}
     -DHAVE_STDINT_H=1
     -DSAMPGDK_AMALGAMATION
-    -DSAMPGDK_CPP_WRAPPERS
 )
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux")

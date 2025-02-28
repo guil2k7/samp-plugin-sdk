@@ -7,7 +7,6 @@
 #include <cstdarg>
 #include <cstdio>
 #include <filesystem>
-#include <stdexcept>
 #include <spsdk/Logger.hh>
 
 using namespace spsdk;
@@ -53,5 +52,5 @@ void Logger::logLnF(LogLevel level, char const* format, ...) {
     m_fn("[%s | %s]: %s", LEVELS_NAME[level], m_pluginName.c_str(), text);
 
     if (level == LOG_LEVEL_CRITICAL)
-        throw std::runtime_error("critical error");
+        abort();
 }

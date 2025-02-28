@@ -8,24 +8,22 @@
 #include <cstddef>
 #include <cstdint>
 #include <utility>
-#include "amx.h"
+#include "AmxUtils.hh"
 
 namespace spsdk {
 
-class AmxWrapper;
-
-enum PawnValueType {
-    Undefined,
-    UInt,
-    Int,
-    Float,
-    String,
-    Array,
+enum class PawnValueType {
+    kUndefined,
+    kUInt,
+    kInt,
+    kFloat,
+    kString,
+    kArray,
 };
 
 class PawnValue {
 public:
-    PawnValue() : type(PawnValueType::Undefined) {}
+    PawnValue() : type(PawnValueType::kUndefined) {}
     
     inline PawnValue(PawnValue&& that) {
         *this = std::move(that);
@@ -38,7 +36,7 @@ public:
     PawnValue& operator =(PawnValue const& that) = delete;
     PawnValue& operator =(PawnValue&& that);
 
-    int push(AmxWrapper& amx) const;
+    int push(AmxAllocManager& allocManager) const;
 
     PawnValueType type;
 
