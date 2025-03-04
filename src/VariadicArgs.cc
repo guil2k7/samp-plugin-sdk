@@ -5,7 +5,7 @@
 
 #include <cstring>
 #include <string>
-#include <spsdk/AmxUtils.hh>
+#include <spsdk/Utils.hh>
 #include <spsdk/VariadicArgs.hh>
 
 using namespace spsdk;

@@ -1,6 +1,6 @@
 set(SPSDK_SOURCE_FILES
     amx.cc
-    AmxUtils.cc
+    Utils.cc
     Logger.cc
     Main.cc
     sampgdk.c

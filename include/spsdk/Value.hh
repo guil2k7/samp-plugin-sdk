@@ -8,7 +8,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <utility>
-#include "AmxUtils.hh"
+#include "Utils.hh"
 
 namespace spsdk {
 

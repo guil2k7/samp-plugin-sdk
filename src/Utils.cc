@@ -3,7 +3,7 @@
 // See LICENSE.txt in the root directory of this project
 // or at https://opensource.org/license/mit.
 
-#include <spsdk/AmxUtils.hh>
+#include <spsdk/Utils.hh>
 #include <spsdk/Logger.hh>
 
 using namespace spsdk;
