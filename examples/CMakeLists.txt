@@ -1,7 +1,11 @@
-add_library(HelloWorld SHARED HelloWorld.cc)
-target_link_libraries(HelloWorld PRIVATE "$<LINK_LIBRARY:WHOLE_ARCHIVE,samp-plugin-sdk>")
-set_target_properties(HelloWorld PROPERTIES PREFIX "")
+add_library(Example1 SHARED HelloWorld.cc)
+target_link_libraries(Example1 PRIVATE "$<LINK_LIBRARY:WHOLE_ARCHIVE,samp-plugin-sdk>")
+set_target_properties(Example1 PROPERTIES PREFIX "")
 
-add_library(Uname SHARED Uname.cc)
-target_link_libraries(Uname PRIVATE "$<LINK_LIBRARY:WHOLE_ARCHIVE,samp-plugin-sdk>")
-set_target_properties(Uname PROPERTIES PREFIX "")
+add_library(Example2 SHARED Uname.cc)
+target_link_libraries(Example2 PRIVATE "$<LINK_LIBRARY:WHOLE_ARCHIVE,samp-plugin-sdk>")
+set_target_properties(Example2 PROPERTIES PREFIX "")
+
+add_library(Example3 SHARED VariadicArgs.cc)
+target_link_libraries(Example3 PRIVATE "$<LINK_LIBRARY:WHOLE_ARCHIVE,samp-plugin-sdk>")
+set_target_properties(Example3 PROPERTIES PREFIX "")

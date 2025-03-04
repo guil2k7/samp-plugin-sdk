@@ -13,14 +13,14 @@ static cell AMX_NATIVE_CALL native_HelloWorld(AMX* amx, cell* params) {
     return 1;
 }
 
-class HelloWorld final : public IPlugin {
+class Example1 final : public IPlugin {
 public:
     std::string getPluginName() const override {
-        return "HelloWorld";
+        return "Example1";
     }
 
     bool init() override {
-        logger.logLnF(LOG_LEVEL_INFO, "Plugin 'HelloWorld' loaded.");
+        logger.logLnF(LOG_LEVEL_INFO, "Plugin 'Example1' loaded.");
         logger.logLnF(LOG_LEVEL_INFO, "  Powered by spsdk.");
 
         return true;
@@ -45,5 +45,5 @@ public:
 };
 
 SPSDK_GET_PLUGIN() {
-    return new HelloWorld();
+    return new Example1();
 }

@@ -9,14 +9,14 @@
 
 using namespace spsdk;
 
-class UnamePlugin final : public IPlugin {
+class Example2 final : public IPlugin {
 public:
     std::string getPluginName() const override {
         return "Uname";
     }
 
     bool init() override {
-        logger.logLnF(LOG_LEVEL_INFO, "Plugin 'UnamePlugin' loaded.");
+        logger.logLnF(LOG_LEVEL_INFO, "Plugin 'Example2' loaded.");
         logger.logLnF(LOG_LEVEL_INFO, "  Powered by spsdk.");
 
         utsname unameData;
@@ -44,5 +44,5 @@ public:
 };
 
 SPSDK_GET_PLUGIN() {
-    return new UnamePlugin();
+    return new Example2();
 }
