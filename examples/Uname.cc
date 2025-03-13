@@ -16,16 +16,16 @@ public:
     }
 
     bool init() override {
-        logger.logLnF(LOG_LEVEL_INFO, "Plugin 'Example2' loaded.");
-        logger.logLnF(LOG_LEVEL_INFO, "  Powered by spsdk.");
+        Logger::global.logLnF(LogLevel::Info, "Plugin 'Example2' loaded.");
+        Logger::global.logLnF(LogLevel::Info, "  Powered by spsdk.");
 
         utsname unameData;
         uname(&unameData);
 
-        logger.logLnF(LOG_LEVEL_INFO, "nodename: %s", unameData.nodename);
-        logger.logLnF(LOG_LEVEL_INFO, "release: %s", unameData.release);
-        logger.logLnF(LOG_LEVEL_INFO, "version: %s", unameData.version);
-        logger.logLnF(LOG_LEVEL_INFO, "machine: %s", unameData.machine);
+        Logger::global.logLnF(LogLevel::Info, "nodename: %s", unameData.nodename);
+        Logger::global.logLnF(LogLevel::Info, "release: %s", unameData.release);
+        Logger::global.logLnF(LogLevel::Info, "version: %s", unameData.version);
+        Logger::global.logLnF(LogLevel::Info, "machine: %s", unameData.machine);
 
         return true;
     }

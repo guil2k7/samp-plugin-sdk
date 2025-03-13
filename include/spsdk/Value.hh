@@ -13,17 +13,17 @@
 namespace spsdk {
 
 enum class PawnValueType {
-    kUndefined,
-    kUInt,
-    kInt,
-    kFloat,
-    kString,
-    kArray,
+    Undefined,
+    UInt,
+    Int,
+    Float,
+    String,
+    Array,
 };
 
 class PawnValue {
 public:
-    PawnValue() : type(PawnValueType::kUndefined) {}
+    PawnValue() : type(PawnValueType::Undefined) {}
     
     inline PawnValue(PawnValue&& that) {
         *this = std::move(that);

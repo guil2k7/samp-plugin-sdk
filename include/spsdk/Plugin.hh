@@ -11,15 +11,15 @@
 namespace spsdk {
 
 enum PluginFlag {
-    kPluginFlag_ProcessTick = 1 << 1,
+    PLUGIN_FLAG_PROCESS_TICK = 1 << 0
 };
 
-constexpr int kPluginFlag_Default = 0;
+constexpr int DEFAULT_PLUGIN_FLAGS = 0;
 
 class IPlugin {
 public:
     virtual int getFlags() const {
-        return kPluginFlag_Default;
+        return DEFAULT_PLUGIN_FLAGS;
     }
 
     virtual std::string getPluginName() const = 0;

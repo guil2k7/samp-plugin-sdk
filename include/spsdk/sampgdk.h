@@ -13,6 +13,10 @@
  * limitations under the License.
  */
 
+#ifndef SPSDK_INCLUDE_SAMPGDK
+  #error SPSDK compiled without sampgdk
+#endif
+
 #ifndef SAMPGDK_BOOL_H
 #define SAMPGDK_BOOL_H
 

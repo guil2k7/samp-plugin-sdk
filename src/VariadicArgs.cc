@@ -74,26 +74,26 @@ VariadicArgsParseError spsdk::parseVariadicArgs(AMX* amx, cell const* args, size
 
     while (lexer.next()) {
         if (argIndex > argsCount)
-            return VariadicArgsParseError::kArgsCountMismatch;
+            return VariadicArgsParseError::ArgsCountMismatch;
 
         cell* source;
         amx_GetAddr(amx, args[argIndex++], &source);
 
         switch (lexer.kind) {
             case 'i':
-                pwnValue.type = PawnValueType::kInt;
+                pwnValue.type = PawnValueType::Int;
                 pwnValue.data.i = *source;
                 output.push_back(std::move(pwnValue));
                 break;
 
             case 'f':
-                pwnValue.type = PawnValueType::kFloat;
+                pwnValue.type = PawnValueType::Float;
                 pwnValue.data.i = *source;
                 output.push_back(std::move(pwnValue));
                 break;
 
             case 'u':
-                pwnValue.type = PawnValueType::kUInt;
+                pwnValue.type = PawnValueType::UInt;
                 pwnValue.data.i = *source;
                 output.push_back(std::move(pwnValue));
                 break;
@@ -102,7 +102,7 @@ VariadicArgsParseError spsdk::parseVariadicArgs(AMX* amx, cell const* args, size
                 cell length;
                 amx_StrLen(source, &length);
 
-                pwnValue.type = PawnValueType::kString;
+                pwnValue.type = PawnValueType::String;
                 pwnValue.data.string.data = new char[length + 1];
                 pwnValue.data.string.length = length;
 
@@ -116,11 +116,11 @@ VariadicArgsParseError spsdk::parseVariadicArgs(AMX* amx, cell const* args, size
                 cell length;
 
                 if (lexer.attribute.empty()) {
-                    return VariadicArgsParseError::kInvalidSpecifierUse;
+                    return VariadicArgsParseError::InvalidSpecifierUse;
                 }
                 else if (lexer.attribute == "*") {
                     if (argIndex >= argsCount)
-                        return VariadicArgsParseError::kArgsCountMismatch;
+                        return VariadicArgsParseError::ArgsCountMismatch;
 
                     length = argIndex++;
                 }
@@ -128,10 +128,10 @@ VariadicArgsParseError spsdk::parseVariadicArgs(AMX* amx, cell const* args, size
                     length = std::stoi(lexer.attribute);
 
                     if (length <= 0)
-                        return VariadicArgsParseError::kInvalidSpecifierUse;
+                        return VariadicArgsParseError::InvalidSpecifierUse;
                 }
 
-                pwnValue.type = PawnValueType::kArray;
+                pwnValue.type = PawnValueType::Array;
                 pwnValue.data.array.data = new cell[length];
                 pwnValue.data.array.length = length;
 
@@ -142,9 +142,9 @@ VariadicArgsParseError spsdk::parseVariadicArgs(AMX* amx, cell const* args, size
             }
 
             default:
-                return VariadicArgsParseError::kUnknownSpecifier;
+                return VariadicArgsParseError::UnknownSpecifier;
         }
     }
 
-    return VariadicArgsParseError::kNone;
+    return VariadicArgsParseError::None;
 }

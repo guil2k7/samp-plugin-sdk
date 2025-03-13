@@ -51,14 +51,14 @@ static cell AMX_NATIVE_CALL native_CreateCallback(AMX* amx, cell* params) {
     int fnIndex;
 
     if (amx_FindPublic(amx, fnName.c_str(), &fnIndex) != AMX_ERR_NONE) {
-        logger.logLnF(LOG_LEVEL_WARNING, "function not found: %s", fnName.c_str());
+        Logger::global.logLnF(LogLevel::Warning, "function not found: %s", fnName.c_str());
         return 0;
     }
 
     std::vector<PawnValue> args;
 
-    if (parseVariadicArgs(amx, params, 2, 3, args) != VariadicArgsParseError::kNone) {
-        logger.logLnF(LOG_LEVEL_WARNING, "arguments parse error");
+    if (parseVariadicArgs(amx, params, 2, 3, args) != VariadicArgsParseError::None) {
+        Logger::global.logLnF(LogLevel::Warning, "arguments parse error");
         return 0;
     }
 
@@ -98,8 +98,8 @@ public:
     }
 
     bool init() override {
-        logger.logLnF(LOG_LEVEL_INFO, "Plugin 'Example3' loaded.");
-        logger.logLnF(LOG_LEVEL_INFO, "  Powered by spsdk.");
+        Logger::global.logLnF(LogLevel::Info, "Plugin 'Example3' loaded.");
+        Logger::global.logLnF(LogLevel::Info, "  Powered by spsdk.");
 
         return true;
     }
