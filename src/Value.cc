@@ -9,19 +9,19 @@ using namespace spsdk;
 
 PawnValue::~PawnValue() {
     switch (type) {
-        case PawnValueType::kUndefined:
+        case PawnValueType::Undefined:
             break;
 
-        case PawnValueType::kInt:
-        case PawnValueType::kFloat:
-        case PawnValueType::kUInt:
+        case PawnValueType::Int:
+        case PawnValueType::Float:
+        case PawnValueType::UInt:
             break;
 
-        case PawnValueType::kString:
+        case PawnValueType::String:
             delete[] data.string.data;
             break;
 
-        case PawnValueType::kArray:
+        case PawnValueType::Array:
             delete[] data.array.data;
             break;
     }
@@ -29,18 +29,18 @@ PawnValue::~PawnValue() {
 
 int PawnValue::push(AmxAllocManager& allocManager) const {
     switch (type) {
-        case PawnValueType::kInt:
-        case PawnValueType::kFloat:
-        case PawnValueType::kUInt:
+        case PawnValueType::Int:
+        case PawnValueType::Float:
+        case PawnValueType::UInt:
             return allocManager.push(data.i);
 
-        case PawnValueType::kString:
+        case PawnValueType::String:
             return allocManager.push(data.string.data);
 
-        case PawnValueType::kArray:
+        case PawnValueType::Array:
             return allocManager.push(data.array.data, data.array.length);
 
-        case PawnValueType::kUndefined:
+        case PawnValueType::Undefined:
             return AMX_ERR_NONE;
     }
 }
@@ -49,25 +49,25 @@ PawnValue& PawnValue::operator =(PawnValue&& that) {
     type = that.type;
 
     switch (type) {
-        case PawnValueType::kInt:
-        case PawnValueType::kFloat:
-        case PawnValueType::kUInt:
+        case PawnValueType::Int:
+        case PawnValueType::Float:
+        case PawnValueType::UInt:
             data.i = that.data.i;
             break;
 
-        case PawnValueType::kString:
+        case PawnValueType::String:
             data.string = that.data.string;
             break;
 
-        case PawnValueType::kArray:
+        case PawnValueType::Array:
             data.array = that.data.array;
             break;
 
-        case PawnValueType::kUndefined:
+        case PawnValueType::Undefined:
             break;
     }
 
-    that.type = PawnValueType::kUndefined;
+    that.type = PawnValueType::Undefined;
 
     return *this;
 }

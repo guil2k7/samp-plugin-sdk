@@ -1,9 +1,10 @@
+option(SPSDK_INCLUDE_SAMPGDB "Include the sampgdk in the SDK" ON)
+
 set(SPSDK_SOURCE_FILES
     amx.cc
     Utils.cc
     Logger.cc
     Main.cc
-    sampgdk.c
     Value.cc
     VariadicArgs.cc
     Exports.def
@@ -14,8 +15,12 @@ set(SPSDK_DEFINTIONS
     -DSPSDK_VERSION_MINOR=${SPSDK_VERSION_MINOR}
     -DSPSDK_VERSION_PATCH=${SPSDK_VERSION_PATCH}
     -DHAVE_STDINT_H=1
-    -DSAMPGDK_AMALGAMATION
 )
+
+if(SPSDK_INCLUDE_SAMPGDB)
+    list(APPEND SPSDK_SOURCE_FILES sampgdk.c)
+    list(APPEND SPSDK_DEFINTIONS -DSPSDK_INCLUDE_SAMPGDB -DSAMPGDK_AMALGAMATION)
+endif()
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     list(APPEND SPSDK_DEFINTIONS -DLINUX=1)

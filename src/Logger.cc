@@ -11,7 +11,7 @@
 
 using namespace spsdk;
 
-Logger spsdk::logger;
+Logger Logger::global;
 
 Logger::Logger(std::string const& pluginName, void (*fn)(char const*, ...))
     : m_pluginName(pluginName)
@@ -26,7 +26,7 @@ Logger::Logger(std::string const& pluginName, void (*fn)(char const*, ...))
     m_file.open(filepath, std::ios::app);
 
     if (!m_file.is_open())
-        logLnF(LOG_LEVEL_ERROR, "File could not be opened '%s'", filepath);
+        logLnF(LogLevel::Error, "File could not be opened '%s'", filepath);
 }
 
 void Logger::logLnF(LogLevel level, char const* format, ...) {
@@ -39,18 +39,18 @@ void Logger::logLnF(LogLevel level, char const* format, ...) {
     va_end(args);
 
     static char const* LEVELS_NAME[] = {
-        "DEBUG",
-        "INFO",
-        "WARNING",
+        "Debug",
+        "Info",
+        "Warning",
         "ERROR",
         "CRITICAL",
     };
 
     if (m_file.is_open())
-        m_file << '[' << LEVELS_NAME[level] << "]: " << text << std::endl;
+        m_file << '[' << LEVELS_NAME[static_cast<int>(level)] << "]: " << text << std::endl;
 
-    m_fn("[%s | %s]: %s", LEVELS_NAME[level], m_pluginName.c_str(), text);
+    m_fn("[%s | %s]: %s", LEVELS_NAME[static_cast<int>(level)], m_pluginName.c_str(), text);
 
-    if (level == LOG_LEVEL_CRITICAL)
+    if (level == LogLevel::Critical)
         abort();
 }

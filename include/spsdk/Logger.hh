@@ -10,16 +10,18 @@
 
 namespace spsdk {
 
-enum LogLevel {
-    LOG_LEVEL_DEBUG,
-    LOG_LEVEL_INFO,
-    LOG_LEVEL_WARNING,
-    LOG_LEVEL_ERROR,
-    LOG_LEVEL_CRITICAL,
+enum class LogLevel {
+    Debug,
+    Info,
+    Warning,
+    Error,
+    Critical,
 };
 
 class Logger {
 public:
+    static Logger global;
+
     Logger() : m_fn{} {}
     Logger(std::string const& pluginName, void (*fn)(char const*, ...));
 
@@ -31,7 +33,5 @@ private:
 
     void (*m_fn)(char const*, ...);
 };
-
-extern Logger logger;
 
 } // namespace spsdk
