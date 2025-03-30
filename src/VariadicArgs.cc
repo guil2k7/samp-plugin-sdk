@@ -122,7 +122,8 @@ VariadicArgsParseError spsdk::parseVariadicArgs(AMX* amx, cell const* args, size
                     if (argIndex >= argsCount)
                         return VariadicArgsParseError::ArgsCountMismatch;
 
-                    length = argIndex++;
+                    length = *source;
+                    amx_GetAddr(amx, args[argIndex++], &source);
                 }
                 else {
                     length = std::stoi(lexer.attribute);
