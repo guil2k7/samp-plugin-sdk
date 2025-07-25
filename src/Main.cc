@@ -6,7 +6,7 @@
 #include <spsdk/Utils.hh>
 #include <spsdk/Logger.hh>
 #include <spsdk/Plugin.hh>
-#include <spsdk/PluginExport.h>
+#include <spsdk/Export.h>
 
 #ifdef SPSDK_INCLUDE_SAMPGDK
 #include <spsdk/sampgdk.h>

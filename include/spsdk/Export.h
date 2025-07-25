@@ -11,10 +11,18 @@
     #define PLUGIN_EXTERN_C
 #endif
 
-#if defined LINUX
-    #define PLUGIN_CALL
+#if defined __GNUC__
     #define PLUGIN_EXPORT PLUGIN_EXTERN_C __attribute__((visibility("default")))
-#elif defined WIN32 || defined _WIN32 || defined __WIN32__
+#elif defined _MSC_VER
+    #define PLUGIN_EXPORT PLUGIN_EXTERN_C __declspec(dllexport)
+#else
+    #error unsupported compiler
+#endif
+
+#if defined _WIN32 || defined __CYGWIN__
     #define PLUGIN_CALL __stdcall
-    #define PLUGIN_EXPORT PLUGIN_EXTERN_C
+#elif defined __unix__
+    #define PLUGIN_CALL
+#else
+    #error unsupported platform
 #endif

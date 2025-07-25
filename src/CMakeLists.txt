@@ -5,7 +5,6 @@ set(SPSDK_SOURCE_FILES
     Main.cc
     Value.cc
     VariadicArgs.cc
-    Exports.def
 )
 
 set(SPSDK_DEFINTIONS

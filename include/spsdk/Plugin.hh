@@ -7,6 +7,7 @@
 
 #include <string>
 #include "amx.h"
+#include "Export.h"
 
 namespace spsdk {
 
@@ -33,7 +34,7 @@ public:
     virtual void processTick() {}
 };
 
-#define SPSDK_GET_PLUGIN() \
-extern "C" spsdk::IPlugin* _spsdk_getPlugin()
-
 } // namespace spsdk
+
+#define SPSDK_GET_PLUGIN() \
+    PLUGIN_EXTERN_C spsdk::IPlugin* PLUGIN_CALL _spsdk_getPlugin()

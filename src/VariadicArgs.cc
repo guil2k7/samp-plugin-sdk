@@ -119,7 +119,7 @@ VariadicArgsParseError spsdk::parseVariadicArgs(AMX* amx, cell const* args, size
                     return VariadicArgsParseError::InvalidSpecifierUse;
                 }
                 else if (lexer.attribute == "*") {
-                    if (argIndex >= argsCount)
+                    if (argIndex > argsCount)
                         return VariadicArgsParseError::ArgsCountMismatch;
 
                     length = *source;
@@ -128,7 +128,7 @@ VariadicArgsParseError spsdk::parseVariadicArgs(AMX* amx, cell const* args, size
                 else {
                     length = std::stoi(lexer.attribute);
 
-                    if (length <= 0)
+                    if (length < 1)
                         return VariadicArgsParseError::InvalidSpecifierUse;
                 }
 

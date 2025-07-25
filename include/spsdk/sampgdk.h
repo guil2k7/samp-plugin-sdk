@@ -136,7 +136,7 @@
 #endif
 
 #include "amx.h"
-#include "PluginExport.h"
+#include "Export.h"
 
 #if defined __INTEL_COMPILER
   /* ... */
